@@ -5,34 +5,37 @@ import axios from "axios";
 
 function App() {
   const [dataSource, setDataSource] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPassengers, setTotalPassengers] = useState(1);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchRecords(1);
+    fetchRecords(1, 10);
   }, []);
   const columns = [
     {
       title: "ID",
       dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Name",
       dataIndex: "name",
+      key: "name",
     },
     {
       title: "Trips",
       dataIndex: "trips",
+      key: "trips",
     },
   ];
 
-  const fetchRecords = (page) => {
+  const fetchRecords = (page, pageSize) => {
     setLoading(true);
     axios
-      .get(`https://api.instantwebtools.net/v1/passenger?page=${page}&size=10`)
+      .get(`https://api.instantwebtools.net/v1/passenger?page=${page}&size=${pageSize}`)
       .then((res) => {
         setDataSource(res.data.data);
-        setTotalPages(res.data.totalPages);
+        setTotalPassengers(res.data.totalPassengers);
         setLoading(false);
       });
   };
@@ -50,10 +53,9 @@ function App() {
         columns={columns}
         dataSource={dataSource}
         pagination={{
-          pageSize: 10,
-          total: totalPages,
-          onChange: (page) => {
-            fetchRecords(page);
+          total: totalPassengers,
+          onChange: (page, pageSize) => {
+            fetchRecords(page, pageSize);
           },
         }}
       ></Table>
